@@ -110,10 +110,17 @@ function create_elem_col(path_prefix,name,is_file)
     }
 
     if(is_file){ 
+<<<<<<< HEAD
         var desc = name.split("==")
         if (desc.length==3){
             if (desc[2]=='.meta'){
                 console.log("hi")
+=======
+        //get file data from filename of metafile
+        var desc = name.split("==")
+        if (desc.length==3){
+            if (desc[2]=='.meta'){
+>>>>>>> Improved naming of uploaded files and sent warning to approve page
                 name = desc[0]
                 var raw_loc = desc[1]
                 var dirs = raw_loc.split('-')
@@ -123,9 +130,12 @@ function create_elem_col(path_prefix,name,is_file)
         }
     }
 
+<<<<<<< HEAD
 
 
 
+=======
+>>>>>>> Improved naming of uploaded files and sent warning to approve page
     new_id += name+"/";
 
     path_prefix.push([name,"#"+new_id]);
@@ -136,8 +146,12 @@ function create_elem_col(path_prefix,name,is_file)
     var handler = get_event_handler_col(is_file,path_prefix.slice(),file_loc);
     
     btn.onclick = handler;
+<<<<<<< HEAD
 //to add the download course button
+=======
+>>>>>>> Improved naming of uploaded files and sent warning to approve page
     if (path_prefix.length == 2){
+        //to add the download course button
         var url = name;
         html = '<a href="#" class="list-group-item list-group-item-action col-item-wrap""><div class="col-item" title="jkj">'+"Download Course"+'</div></a>';
         var bt=$.parseHTML(html)[0];
@@ -260,6 +274,7 @@ function create_column(path_prefix)
     }
 }
 
+<<<<<<< HEAD
 $(document).ready(function()
 {
     if(COLS_ELEM) // checking if the current page has filebrowser div
@@ -272,3 +287,5 @@ $(document).ready(function()
         });
     }
 });
+=======
+>>>>>>> Improved naming of uploaded files and sent warning to approve page

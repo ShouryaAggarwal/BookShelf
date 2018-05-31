@@ -11,7 +11,6 @@ class FilePath(Exception):
     """
     pass
 
-
 class InvalidPath(Exception):
     """
         Raised when the path given is not a valid heirarchical
@@ -19,7 +18,10 @@ class InvalidPath(Exception):
     """
     pass
 
+<<<<<<< HEAD
 
+=======
+>>>>>>> Improved naming of uploaded files and sent warning to approve page
 def navigate_path(db,path):
     """
         Returns appropriate dict as pointed to by path.
@@ -35,7 +37,10 @@ def navigate_path(db,path):
         raise FilePath
     return db
 
+<<<<<<< HEAD
 
+=======
+>>>>>>> Improved naming of uploaded files and sent warning to approve page
 def truncate_db(db,depth):
     """
         Truncated database according to the given depth.
@@ -73,7 +78,6 @@ def build_nav_path(prefix,path):
         result.append((key,acc))
     return result
 
-
 def generate_path(path):
     d = collections.OrderedDict()
     if os.path.isdir(path):
@@ -87,9 +91,16 @@ def generate_path(path):
         return path[2:]
     return d
 
+<<<<<<< HEAD
 
 def path_to_dict(path,name_of_file):
     """Checks if file with name exists and if it doesnt it recreates all the heirarchy."""
+=======
+def path_to_dict(path,name_of_file):
+    """
+        Checks if file with name exists and if it doesnt it recreates all the heirarchy.
+    """
+>>>>>>> Improved naming of uploaded files and sent warning to approve page
     if os.path.isfile(name_of_file):
         f = open(name_of_file, "r").read()
         heirarchy = json.loads(f)
@@ -103,7 +114,13 @@ def path_to_dict(path,name_of_file):
 
 
 def remove_zips(data):
+<<<<<<< HEAD
     """Function to remove all the zip files from the made database.json"""
+=======
+    """
+        Function to remove all the zip files from the made database.json
+    """
+>>>>>>> Improved naming of uploaded files and sent warning to approve page
     if not isinstance(data, (dict, list)):
         return data
     if isinstance(data, list):
@@ -113,6 +130,7 @@ def remove_zips(data):
 
 
 def recreate_path(path, name_of_file):
+<<<<<<< HEAD
     """Builds meta_files"""
     """Export new files to FILE_SV directory"""
     """Zip the courses again"""
@@ -120,6 +138,17 @@ def recreate_path(path, name_of_file):
     views.build_meta_files()
     views.export_files()
     views.zip_courses()
+=======
+    """
+        Builds meta_files
+        Export new files to FILE_SV directory
+        Zip the courses again
+        Forces Recreation of hierarchy
+    """
+    views.zip_courses()
+    views.build_meta_files()
+    views.export_files()
+>>>>>>> Improved naming of uploaded files and sent warning to approve page
     heirarchy = generate_path(path)
     heirarchy = remove_zips(heirarchy)
     f = open(name_of_file, "w+")

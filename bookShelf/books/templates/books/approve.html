@@ -21,13 +21,29 @@
 <div class="panel panel-default">
     <div class="panel-body">
     <center><h6>{{ error }}</h6></center>
-    {% for doc in unapproved_documents%}
+    {% for doc in unapproved_documents %}
         <a id="unapproved_document" href="/../media/unapproved/{{ doc }}" target="blank">{{ doc }}</a>
+        <br/>
         <a style="position: absolute;right: 33%" id="unapproved_document" href="/books/approve_unapproved_document?name={{doc}}">Approve</a>
         <a style="position: absolute;right: 27%" id="unapproved_document" href="/books/remove_unapproved_document?name={{doc}}">Remove</a>
         <a style="position: absolute;right: 21%" id="unapproved_document" href="/books/rename?name={{doc}}">Rename</a>
+        <br/>
+        <!-- PUT IF STATEMENT HERE -->
+        <!-- ACCESS (FORLOOP.COUNTER - 1)th ELEMENT OF DO_EXIST -->
+        <strong> File with same name exists ! {{ forloop.counter }} {{ do_exist.0 }}</strong> <br/>
+        <!-- Also put link to the already existing file -->
+        <!-- ENDIF HERE -->
         <br><br>
     {% endfor %}
     </div>
 </div>
+
+<hr>
+<input type="search">
+<button>Search</button>
+<div id="output"></div>
+<hr/>
+<div class="d-flex flex-row" id="file-browser"></div>
+<script src="{% static 'js/browse.js' %}"></script>
+<script src="{% static 'js/filesearch.js' %}"></script>
 {% endblock %}

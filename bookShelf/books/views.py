@@ -5,6 +5,7 @@ import json
 import operator
 import shutil
 import errno
+<<<<<<< HEAD
 
 # Django Imports
 from django.shortcuts import render, redirect
@@ -12,6 +13,12 @@ from django.shortcuts import render, redirect
 import zipfile
 
 # Django Imports
+=======
+
+import zipfile
+
+# Django Imports
+>>>>>>> Improved naming of uploaded files and sent warning to approve page
 from datetime import datetime, timedelta
 from django.shortcuts import render, redirect, HttpResponse
 from django.http import Http404
@@ -27,13 +34,13 @@ from books import search as search
 # Custom JSON Database Creator
 from books import JSONcreator as jsc
 
-DATABASE_DIR = "../media/database"
+DATABASE_DIR = os.path.join('..', 'media', 'database')
 DATABASE_URL = "/media/database"
 FILESV_CODE = "..-media-files"
-FILESV_DIR = "../media/files"
-UNAPPROVED_DIR = "../media/unapproved/"
+FILESV_DIR = os.path.join('..', 'media', 'files')
+UNAPPROVED_DIR = os.path.join('..', 'media', 'unapproved')
 DATABASE_DICT_FILE_NAME = "database.json"
-SEPARATOR = "\\"
+SEPARATOR = "$"
 TAG = "=="
 META_SPLIT_COMPONENTS = 3
 META_EXTENSION = ".meta"
@@ -42,6 +49,11 @@ ZIP_TIME_LIMIT = timedelta(days=92, hours=0, minutes=0)
 # space limit of database directory
 ZIP_SPACE_LIMIT = 1e+10
 STATS_FILE = "course_downloads.txt"
+<<<<<<< HEAD
+=======
+# tags to exclude from appearing in meta files
+EXCLUDED_TAGS = ['Assignments', 'Question-Papers', 'Minor1', 'Minor2', 'Major', 'Books', 'Others', 'Professors']
+>>>>>>> Improved naming of uploaded files and sent warning to approve page
 
 
 def index(request):
@@ -56,22 +68,27 @@ def getFileName(course_code, sem, year, type_file, prof, filename, other):
     else:
         origFileName = '.'.join(filename.split('.')[:-1])
     fileExtension = "." + filename.split('.')[-1]
-    dirPath = course_code[0:2] + SEPARATOR + course_code + SEPARATOR
+    dirPath = course_code[0:2] + SEPARATOR + course_code
 
     if (type_file == 'Minor1' or type_file == 'Minor2' or type_file == 'Major'):
-        dirPath = dirPath + "Question-Papers" + SEPARATOR + type_file + SEPARATOR
-        toWriteFileName = dirPath + fileNamePrefix + "-" + type_file + "-" + course_code + fileExtension + TAG + course_code + SEPARATOR + type_file
-    elif (type_file == 'Books' or type_file == 'Others'):
-        dirPath = dirPath + type_file + SEPARATOR
-        toWriteFileName = dirPath + origFileName + fileExtension + TAG + course_code + SEPARATOR + prof
+        dirPath = dirPath + SEPARATOR + "Question-Papers" + SEPARATOR + type_file
+        toWriteFileName = dirPath + SEPARATOR + fileNamePrefix + "-" + type_file + "-" + course_code + fileExtension + TAG + course_code + SEPARATOR + type_file
+    elif (type_file == 'Books'):
+        dirPath = dirPath + SEPARATOR + type_file
+        toWriteFileName = dirPath + SEPARATOR + origFileName + fileExtension + TAG + course_code + SEPARATOR + prof
+    elif (type_file == 'Others'):
+        dirPath = dirPath + SEPARATOR + type_file
+        toWriteFileName = dirPath + SEPARATOR + fileNamePrefix + origFileName + "-" + course_code + fileExtension + TAG + course_code + SEPARATOR + prof
     else:
-        dirPath = dirPath + "Professors" + SEPARATOR + prof + SEPARATOR + type_file + SEPARATOR
-        toWriteFileName = dirPath + fileNamePrefix + "-" + origFileName + fileExtension + TAG + course_code + SEPARATOR + prof
+        dirPath = dirPath + SEPARATOR + "Professors" + SEPARATOR + prof + SEPARATOR + type_file
+        toWriteFileName = dirPath + SEPARATOR + fileNamePrefix + "-" + origFileName + "-" + type_file + "-" + course_code + fileExtension + TAG + course_code + SEPARATOR + prof
     return toWriteFileName
 
 
-# Controller to Handle Upload of Documents
 def upload(request):
+    """
+		Controller to Handle Upload of Documents
+	"""
     if request.method == 'POST':
         course_code = request.POST.get('course_code', "None").upper()
         sem = request.POST.get('sem', "None")
@@ -84,10 +101,10 @@ def upload(request):
             other_text = 'None'
         for document in documents:
             filename = getFileName(course_code, sem, year, type_file, prof, document.name, other_text)
-            directory = os.path.dirname(UNAPPROVED_DIR + filename)
+            directory = os.path.dirname(os.path.join(UNAPPROVED_DIR, filename))
             if not os.path.exists(directory):
                 os.makedirs(directory)
-            destination = open(UNAPPROVED_DIR + filename, "wb+")
+            destination = open(os.path.join(UNAPPROVED_DIR, filename), "wb+")
             for chunk in document.chunks():
                 destination.write(chunk)
             destination.close()
@@ -99,13 +116,22 @@ def upload(request):
 
 # function to serve the zip files of entire courses
 def download_course(request):
+    """
+		function to serve the zip files of entire courses
+	"""
     course = request.GET.get('course', 'none')
     if course == 'none':
         return redirect('/books/')
     parent_dir = course[0:2]
+<<<<<<< HEAD
     zip_location = DATABASE_DIR + '/' + parent_dir + '/' + course + '.zip'
     if not(os.path.exists(zip_location) and os.path.isfile(zip_location)):
         course_path = DATABASE_DIR + '/' + parent_dir + '/' + course
+=======
+    zip_location = os.path.join(DATABASE_DIR, parent_dir, course + '.zip')
+    if not (os.path.exists(zip_location) and os.path.isfile(zip_location)):
+        course_path = os.path.join(DATABASE_DIR, parent_dir, course)
+>>>>>>> Improved naming of uploaded files and sent warning to approve page
         zf = zipfile.ZipFile(zip_location, "w")
         for dirname, sudirs, files in os.walk(course_path):
             for filename in files:
@@ -121,11 +147,22 @@ def download_course(request):
                                             os.path.split(file_loc)[1])
                     zf.write(file_loc, arcname=to_write)
         zf.close()
+<<<<<<< HEAD
     # records the downloaded zip file in the stats file
     with open(STATS_FILE, "r") as stats:
         lines = stats.readlines()
     start_time = lines[0].split(':')[1]
     if start_time.strip('\n') == '' or datetime.now() > datetime.strptime(start_time.strip('\n'), '%d/%m/%Y') + ZIP_TIME_LIMIT:
+=======
+    """
+		records the downloaded zip file in the stats file
+	"""
+    with open(STATS_FILE, "r") as stats:
+        lines = stats.readlines()
+    start_time = lines[0].split(':')[1]
+    if start_time.strip('\n') == '' or datetime.now() > datetime.strptime(start_time.strip('\n'),
+                                                                          '%d/%m/%Y') + ZIP_TIME_LIMIT:
+>>>>>>> Improved naming of uploaded files and sent warning to approve page
         lines[0] = lines[0].split(':')[0] + ":" + datetime.now().strftime("%d/%m/%Y") + '\n'
         for k in range(1, len(lines)):
             seperated = lines[k].split(":")
@@ -144,25 +181,36 @@ def download_course(request):
     return redirect('/../media/database/' + parent_dir + '/' + course + '.zip')
 
 
-# Controller to Handle approval of requests
 @login_required
 def approve(request):
+    """
+		Controller to Handle approval of requests
+	"""
     unapproved_documents = []
+    do_exist = []
     for path, subdirs, files in os.walk(UNAPPROVED_DIR):
         for filename in files:
+            arg = False
             f = os.path.join(path, filename)
-            unapproved_documents.append(str(f)[str(f).rindex("/") + 1:])
+            unapproved_documents.append(str(f)[str(f).rindex(os.sep) + 1:])
+            name = f.split(TAG)[0]
+            name = name.split(SEPARATOR)[-1]
+            check = os.path.join(FILESV_DIR, name)
+            print(check)
+            if os.path.exists(check) and os.path.isfile(check):
+                arg = True
+            do_exist.append(arg)
     if len(unapproved_documents) == 0:
         error = "No Unapproved documents present, please ask people to upload material and contribute to the Citadel"
     else:
         error = ''
-    return render(request, 'books/approve.html', {'unapproved_documents': unapproved_documents, 'error': error})
+    return render(request, 'books/approve.html', {'unapproved_documents': unapproved_documents, 'do_exist': do_exist, 'error': error})
 
 
 @login_required
 def remove_unapproved_document(request):
     try:
-        os.remove(UNAPPROVED_DIR + request.GET.get('name', 'none'))
+        os.remove(os.path.join(UNAPPROVED_DIR, request.GET.get('name', 'none')))
     except:
         return HttpResponse('<h1>No such file exists. Maybe it was manually deleted</h1>')
     return redirect('/books/approve')
@@ -171,16 +219,19 @@ def remove_unapproved_document(request):
 # controller to approve the files and create the meta file of those files alongside in the database_dir
 @login_required
 def approve_unapproved_document(request):
+    """
+		controller to approve the files and create the meta file of those files alongside in the database_dir
+	"""
     fileDes = request.GET.get('name', 'none')
     fileName = fileDes.split(TAG)
     seperatedlist = fileName[0].split(SEPARATOR)
     tags = fileName[1].split(SEPARATOR)
     destination = DATABASE_DIR
     for directory in seperatedlist:
-        destination = destination + "/" + directory
+        destination = os.path.join(destination, directory)
     file = destination.split('.')
     try:
-        shutil.copy(UNAPPROVED_DIR + fileDes, destination)
+        shutil.copy(os.path.join(UNAPPROVED_DIR, fileDes), destination)
         destination_meta = '.'.join(file[:-1]) + "." + file[-1] + TAG + FILESV_CODE + TAG + '.meta'
         keys = []
         if os.path.exists(destination_meta) and os.path.isfile(destination_meta):
@@ -190,13 +241,16 @@ def approve_unapproved_document(request):
             if tags[k] not in keys:
                 metafile.write(tags[k] + '\n')
         metafile.close()
+<<<<<<< HEAD
         #    jsc.recreate_path(DATABASE_DIR, DATABASE_DICT_FILE_NAME)
+=======
+>>>>>>> Improved naming of uploaded files and sent warning to approve page
         return redirect('/books/remove_unapproved_document?name=' + fileDes)
     except IOError as e:
         if e.errno != errno.ENOENT:
             raise
         os.makedirs(os.path.dirname(destination), exist_ok=True)
-        shutil.copy(UNAPPROVED_DIR + fileDes, destination)
+        shutil.copy(os.path.join(UNAPPROVED_DIR, fileDes), destination)
         destination_meta = '.'.join(file[:-1]) + "." + file[-1] + TAG + FILESV_CODE + TAG + '.meta'
         keys = []
         if os.path.exists(destination_meta) and os.path.isfile(destination_meta):
@@ -206,7 +260,10 @@ def approve_unapproved_document(request):
             if tags[k] not in keys:
                 metafile.write(tags[k] + '\n')
         metafile.close()
+<<<<<<< HEAD
         #    jsc.recreate_path(DATABASE_DIR, DATABASE_DICT_FILE_NAME)
+=======
+>>>>>>> Improved naming of uploaded files and sent warning to approve page
         return redirect('/books/remove_unapproved_document?name=' + fileDes)
 
 
@@ -215,10 +272,11 @@ def rename(request):
     if request.method == "GET":
         return render(request, "books/rename.html", {"org": request.GET.get('name', 'none')})
     elif request.method == "POST":
-        directory = os.path.dirname(UNAPPROVED_DIR + request.POST.get('final'))
+        directory = os.path.dirname(os.path.join(UNAPPROVED_DIR, request.POST.get('final')))
         if not os.path.exists(directory):
             os.makedirs(directory)
-        shutil.copy(UNAPPROVED_DIR + request.POST.get('org'), UNAPPROVED_DIR + request.POST.get('final'))
+        shutil.copy(os.path.join(UNAPPROVED_DIR, request.POST.get('org')),
+                    os.path.join(UNAPPROVED_DIR, request.POST.get('final')))
         return redirect('/books/remove_unapproved_document?name=' + request.POST.get('org'))
     else:
         return HttpResponse('<h1> Invalid use of Rename API</h1>')
@@ -228,6 +286,10 @@ def rename(request):
 # admin needs to click on finalize approvals once after manually pasting new files.
 @login_required
 def finalize_approvals(request):
+    """
+		controller to finalize all the approvals (calls the recreate path function from jsc)
+		admin needs to click on finalize approvals once after manually pasting new files.
+	"""
     if request.method == "GET":
         jsc.recreate_path(DATABASE_DIR, DATABASE_DICT_FILE_NAME)
         return redirect('/books/approve')
@@ -256,7 +318,6 @@ def userlogout(request):
 def APIstructure(request):
     f = jsc.path_to_dict(DATABASE_DIR, DATABASE_DICT_FILE_NAME)
     path = request.GET.get('path', "/")
-    print(path)
     depth = int(request.GET.get('depth', 3))
     try:
         db = jsc.navigate_path(f, path)
@@ -270,9 +331,17 @@ def APIstructure(request):
 
 @api_view()
 def APIsearch(request):
+<<<<<<< HEAD
     f = jsc.path_to_dict(DATABASE_DIR, DATABASE_DICT_FILE_NAME)  ####can this be drier? repeated code
     keyword_list = (request.GET.get('query', "")).split()
     print(keyword_list)
+=======
+    """
+		gives a list of all path_prefix objects matching search terms
+	"""
+    f = jsc.path_to_dict(DATABASE_DIR, DATABASE_DICT_FILE_NAME)  ####can this be drier? repeated code
+    keyword_list = (request.GET.get('query', "")).split()
+>>>>>>> Improved naming of uploaded files and sent warning to approve page
     path = request.GET.get('path', "/")
     path_prefix = search.get_path_prefix(path)
     try:
@@ -292,8 +361,16 @@ def heartbeat(request):
 
 
 def zip_courses():
+<<<<<<< HEAD
     """function to intelligently zip all the courses depending upon if their zips have been deleted due to
         less number of downloads or not """
+=======
+    """
+		function to intelligently zip all the courses
+		depending upon if their zips have been deleted 
+		due to less number of downloads or not 
+	"""
+>>>>>>> Improved naming of uploaded files and sent warning to approve page
     for root, dirs, files in os.walk(DATABASE_DIR, topdown=True):
         flag = 0
         for name in dirs:
@@ -337,16 +414,20 @@ def zip_courses():
 
 # function to export the pasted or approved files from database_dir to file_sv_dir
 def export_files():
+    """
+		function to export the pasted or approved files from database_dir to file_sv_dir
+	"""
     for root, dirs, files in os.walk(DATABASE_DIR):
         for filename in files:
             if not filename.lower().endswith(('.zip', '.meta')):
                 from_link = os.path.join(root, filename)
-                to_link = FILESV_DIR + '/' + os.path.split(from_link)[1]
+                to_link = os.path.join(FILESV_DIR, os.path.split(from_link)[1])
                 shutil.move(from_link, to_link)
 
 
 # function to provide the actual file location and name from the name of its metafile
 def get_file_loc(meta_file):
+<<<<<<< HEAD
     desc = meta_file.split(TAG)
     if len(desc) == 3:
         if desc[-1] == META_EXTENSION:
@@ -360,7 +441,27 @@ def get_file_loc(meta_file):
 
 
 # function to build meta files for all the files which are manually pasted (uses the location)
+=======
+    """
+		function to provide the actual file location and name from the name of its metafile
+	"""
+    desc = meta_file.split(TAG)
+    if (len(desc) == 3):
+        if (desc[-1] == META_EXTENSION):
+            file_name = desc[0]
+            raw_loc = desc[1]
+            dirs = raw_loc.split('-')
+            file_dir = os.path.join(*dirs)
+            file_loc = os.path.join(file_dir, file_name)
+            return (file_name, file_loc)
+    return (meta_file, None)
+
+
+>>>>>>> Improved naming of uploaded files and sent warning to approve page
 def build_meta_files():
+    """
+		function to build meta files for all the files which are manually pasted (uses the location)
+	"""
     for root, dirs, files in os.walk(DATABASE_DIR, topdown=True):
         for filename in files:
             if not filename.lower().endswith(('.meta', '.zip')):
@@ -372,13 +473,21 @@ def build_meta_files():
                     inner_path = os.path.split(inner_path)[0]
                     inner_path = os.path.split(inner_path)[0]
                     while os.path.split(inner_path)[0] is not '':
-                        f.write(os.path.split(inner_path)[1] + '\n')
+                        if os.path.split(inner_path)[1] not in EXCLUDED_TAGS:
+                            f.write(os.path.split(inner_path)[1] + '\n')
                         inner_path = os.path.split(inner_path)[0]
                     f.close()
 
 
+<<<<<<< HEAD
 # function to get the size of entire database_dir (mostly zip files)
 def get_size():
+=======
+def get_size():
+    """
+		function to get the size of entire database_dir (mostly zip files)
+	"""
+>>>>>>> Improved naming of uploaded files and sent warning to approve page
     total_size = 0
     for dirpath, dirnames, filenames in os.walk(DATABASE_DIR):
         for f in filenames:
@@ -387,9 +496,17 @@ def get_size():
     return total_size
 
 
+<<<<<<< HEAD
 # function to delete less frequently used zips until size of database_dir comes under size_limit
 def delete_zips():
     # currently needs to be called manually (in testing phase)
+=======
+def delete_zips():
+    """
+		function to delete less frequently used zips until size of database_dir comes under size_limit
+		currently needs to be called manually (in testing phase)
+	"""
+>>>>>>> Improved naming of uploaded files and sent warning to approve page
     if get_size() < ZIP_SPACE_LIMIT:
         return
 
@@ -406,6 +523,7 @@ def delete_zips():
     while get_size() > ZIP_SPACE_LIMIT:
         course = data[cntr][0]
         parent_dir = course[0:2]
+<<<<<<< HEAD
         zip_location = DATABASE_DIR + '/' + parent_dir + '/' + course + '.zip'
         if os.path.exists(zip_location) and os.path.isfile(zip_location):
             os.remove(zip_location)
@@ -414,3 +532,9 @@ def delete_zips():
 
 
 
+=======
+        zip_location = os.path.join(DATABASE_DIR, parent_dir, course + '.zip')
+        if os.path.exists(zip_location) and os.path.isfile(zip_location):
+            os.remove(zip_location)
+        cntr = cntr + 1
+>>>>>>> Improved naming of uploaded files and sent warning to approve page

@@ -1,8 +1,4 @@
-<<<<<<< HEAD
-START_TIME:28/05/2018
-=======
 START_TIME:
->>>>>>> Improved naming of uploaded files and sent warning to approve page
      COL818:0
      CVL281:0
      CET410:0
@@ -562,11 +558,7 @@ START_TIME:
      ELL303:0
      AML732:0
      PYD562:0
-<<<<<<< HEAD
-     APL100:3
-=======
      APL100:0
->>>>>>> Improved naming of uploaded files and sent warning to approve page
      MSL745:0
      ASD881:0
      APL753:0
@@ -1225,11 +1217,7 @@ START_TIME:
      CVL872:0
      PYL102:0
      CML733:0
-<<<<<<< HEAD
-     MTL100:2
-=======
      MTL100:0
->>>>>>> Improved naming of uploaded files and sent warning to approve page
      PYL759:0
      CHC410:0
      ELL888:0
