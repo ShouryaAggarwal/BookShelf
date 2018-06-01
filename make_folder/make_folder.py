@@ -44,7 +44,4 @@ for course in courses:
         os.makedirs('DATA/'+dept+'/'+course+'/Others')
     if not os.path.exists('DATA/'+dept+'/'+course+'/Professors'):
         os.makedirs('DATA/'+dept+'/'+course+'/Professors')  
-<<<<<<< HEAD
-=======
 
->>>>>>> Improved naming of uploaded files and sent warning to approve page

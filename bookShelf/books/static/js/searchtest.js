@@ -1,9 +1,5 @@
 
-<<<<<<< HEAD
-
-=======
 //only run after browse.js
->>>>>>> Improved naming of uploaded files and sent warning to approve page
 $(document).ready(function(){
 	$("button")[0].addEventListener("click", function(){
 		DB={};
@@ -19,12 +15,9 @@ $(document).ready(function(){
 			    	var path_prefixer=DBZ["result"][i]
 			    	path_prefixer[0].push("#")
 
-<<<<<<< HEAD
-=======
 
 			    	// indicate difference in depth of path_prefix and depth of divs to display
 			    	// workaround; unneeded if frontend is redesigned
->>>>>>> Improved naming of uploaded files and sent warning to approve page
 			    	var l =  path_prefixer.length
 			    	path_prefixer[0].push(l)
 			    	if (typeof(get_prefix_dict(path_prefixer))==="string"){
@@ -39,8 +32,6 @@ $(document).ready(function(){
 		});
 	})
 })
-<<<<<<< HEAD
-=======
 
 
 
@@ -56,4 +47,3 @@ $(document).ready(function(){
     });
 })
 
->>>>>>> Improved naming of uploaded files and sent warning to approve page
